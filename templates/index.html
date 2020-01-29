@@ -1,0 +1,103 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<center>
+  <div>
+    <form method="POST">
+      Units
+      <select name="units" required>
+        <option value="Celcius">Celcius</option>
+        <option value="Kelvin">Kelvin</option>
+      </select>
+      <br/><br/>
+      Enter temperature:
+      <input type="text" name="temperature" required>
+      <br/><br/>
+      <table class="table" style="width:50%;">
+        <tr><td>Fever</td><td><input type="checkbox" name="fever" value="Fever"></td></tr>
+        <tr><td>Flu</td><td><input type="checkbox" name="flu" value="Flu"></td></tr>
+        <tr><td>Cough</td><td><input type="checkbox" name="cough" value="Cough"></td></tr>
+        <tr><td>Shortness of breath</td><td><input type="checkbox" name="shortness_of_breath" value="Shortness of breath"></td></tr>
+      </table>
+      <button type="submit" class="btn btn-secondary">Check temperature</button>
+    </form>
+    {% if error_message %}
+      <br/>
+      <div class="alert alert-danger alert-dismissible show" role="alert">
+        {{error_message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+  <hr/>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="riskData-tab" data-toggle="tab" href="#riskData" role="tab" aria-controls="riskData" aria-selected="true">Risk Data</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="statistics-tab" data-toggle="tab" href="#statistics" role="tab" aria-controls="statistics" aria-selected="false">Statistics</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="news-tab" data-toggle="tab" href="#news" role="tab" aria-controls="news" aria-selected="false">News</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="riskData" role="tabpanel" aria-labelledby="riskData">
+      <div class="card">
+        <h5 class="card-header" style="border-color:{{border_color}}; border-width:5px;">Your temperature is: {{temp}}</h5>
+        <div class="card-body">
+          <h5 class="card-title">{{message_title}}</h5>
+          <p class="card-text">
+            <table class="table">
+              <tr><th>Additional risk factors</th></tr>
+              <tr><td>Recent travel to Wuhan, China, and other places where there is an outbreak</td></tr>
+              <tr><td>Close contact with people who are diagnosed with the disease</td></tr>
+              <tr><td>Close contact with anyone who has visited an outbreak zone like Wuhan</td></tr>
+              <tr><td>Contact with secretions from an infected person</td></tr>
+              <tr><td>Eating or handling wild animals native to China (and other countries)</td></tr>
+            </table>
+            With reference from:
+            <a href="https://www.medicinenet.com/wuhan_coronavirus_2019-ncov/article.htm">Medicinenet</a>
+          </p>
+        </div>
+      </div>
+      <div class="container" id="streetMap" style="height:180px;"></div>
+    </div>
+
+    <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics">
+      <div id="plotterPanel"></div>
+    </div>
+
+    <div class="tab-pane fade" id="news" role="tabpanel" aria-labelledby="news">
+      {% for article in articles %}
+      <div class="card text-center">
+        <div class="card-header">
+          {{article["source"]["name"]}} | {{article["author"]}}
+        </div>
+        <div class="card-body">
+          {% set articleURL=article["url"] %}
+          <h5 class="card-title"><a href={{articleURL}}>{{article["title"]}}</a></h5>
+          <p class="card-text">
+            {{article["description"]}}
+          </p>
+        </div>
+        <div class="card-footer text-muted">
+          {{article["publishedAt"]}}
+        </div>
+      </div>
+      <br/>
+      {% endfor %}
+    </div>
+  </div>
+
+</center>
+
+<script>
+  {% include "js/data.js" %}
+</script>
+
+{% endblock content %}
