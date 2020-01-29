@@ -9,17 +9,23 @@ load_dotenv(os.path.join(project_folder, ".env"))
 
 API_KEY = "a621f645307c47129920cf7858d1dffe"
 
+connection = sqlite3.connect("Temperatures.db")
+cursor = connection.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS 'Temperature' ('Kelvin' REAL NOT NULL, 'Celcius' REAL NOT NULL);")
+connection.commit()
+connection.close()
+
 def database (type, command, additional=None):
     result = None
     connection = sqlite3.connect("Temperatures.db")
     cursor = connection.cursor()
     if type == "INSERT":
         cursor.execute(command, additional)
+        connection.commit()
     else:
         cursor.execute(command)
     if type == "SELECT":
         result = cursor.fetchall()
-    connection.commit()
     connection.close()
     return result
 
