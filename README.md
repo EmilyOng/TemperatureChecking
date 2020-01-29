@@ -1,7 +1,7 @@
 # Temperature Checking
 
 ![Main](documentation/images/Main.png)
-* Danger zone is triggered when temperature is more than 38&deg;C or there are at least 2 symptoms present.
+* Danger zone is triggered when temperature is more than or equals to 38&deg;C or there are at least 2 symptoms present, at which the border will turn to red (instead of green).
 
 ## Getting started
 ### Technologies
