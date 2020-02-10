@@ -4,6 +4,7 @@ import sqlite3
 import requests
 from dotenv import load_dotenv
 
+
 project_folder = os.path.expanduser("~/TemperatureChecking")
 load_dotenv(os.path.join(project_folder, ".env"))
 
@@ -40,6 +41,18 @@ def fetch_news ():
     articles = response.json()["articles"]
     return articles
 
+# def get_updates ():
+#     url = "https://www.moh.gov.sg/2019-ncov-wuhan"
+#     with urllib.request.urlopen(url) as response:
+#         html = response.read()
+
+#     soup = BeautifulSoup(html, "html.parser")
+#     parent = soup.find(id="ContentPlaceHolder_contentPlaceholder_C009_Col00")
+#     updates = {}
+#     updates["Latest"] = parent.find("table")
+#     return updates
+
+
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", default=False)
@@ -52,11 +65,12 @@ def request_processor ():
         session.pop("error_message")
         result_k, result_c = get_graph()
         return render_template("index.html", error_message=error_message,
-                                result=[result_k, result_c])
+                                result=[result_k, result_c], articles=articles)
     elif "postal_code" in session:
         postal_code = session["postal_code"]
         session.pop("postal_code")
-        return render_template("index.html", show_location=True, postal_code=postal_code, tab="active")
+        return render_template("index.html", show_location=True, postal_code=postal_code, tab="active",
+                                articles=articles)
     elif "temperature_processor" in session:
         danger = session["temperature_processor"]["danger"]
         temp = session["temperature_processor"]["temp"]
@@ -115,4 +129,4 @@ def index ():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

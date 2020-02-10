@@ -33,9 +33,9 @@
     {% endif %}
   </div>
   <hr/>
-  <div class="card">
+  <div class="card" style="background-color:orange;">
     <div class="card-body">
-        {% include "information.txt" %}
+        {% include "information/information.txt" %}
         <br/>
         <a href="https://www.who.int/health-topics/coronavirus">Click here to find out more!</a>
     </div>
@@ -61,6 +61,9 @@
         {% else %}
           <a class="nav-link" id="masks-tab" data-toggle="tab" href="#mask_gowhere" role="tab" aria-controls="mask_gowhere" aria-selected="false">Mask GoWhere</a>
         {% endif %}
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="crowdsourcing-tab" data-toggle="tab" href="#crowdsourcing" role="tab" aria-controls="crowdsourcing" aria-selected="false">Crowdsourcing</a>
     </li>
   </ul>
 
@@ -92,7 +95,6 @@
           <p>Click on the image to find out more about the advisory on wearing mask</p>
         </div>
       </div>
-      <div class="container" id="streetMap" style="height:180px;"></div>
     </div>
 
     <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics">
@@ -135,12 +137,21 @@
             <hr/>
             {% set link="https://www.maskgowhere.gov.sg/?postal=" + postal_code|string %}
             <div style="height:500px;">
-                <iframe src={{link}} style="width:80%; height=100%;" allowfullscreen></iframe>
+                <iframe src={{link}} style="width:80%; height=700px;"></iframe>
             </div>
         {% endif %}
         <br/><br/>
     </div>
+
+    <div class="tab-pane fade" id="crowdsourcing" role="tabpanel" aria-labelledby="crowdsourcing">
+      <h3>Crowdsourcing</h3>
+
+    </div>
+
   </div>
+
+  <br/><hr/>
+  <div class="container" id="streetMap" style="height:180px;"></div>
 
 </center>
 
