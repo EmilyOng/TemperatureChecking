@@ -53,6 +53,10 @@ def request_processor ():
         result_k, result_c = get_graph()
         return render_template("index.html", error_message=error_message,
                                 result=[result_k, result_c])
+    elif "postal_code" in session:
+        postal_code = session["postal_code"]
+        session.pop("postal_code")
+        return render_template("index.html", show_location=True, postal_code=postal_code, tab="active")
     elif "temperature_processor" in session:
         danger = session["temperature_processor"]["danger"]
         temp = session["temperature_processor"]["temp"]
@@ -78,23 +82,31 @@ def request_processor ():
 @app.route("/", methods=["GET", "POST"])
 def index ():
     if request.form:
-        units = request.form["units"]
-        temperature = request.form["temperature"]
-        # Check temperature data type
-        try:
-            temperature = float(temperature)
-            keys = list(request.form.keys())
-            keys.remove("units")
-            keys.remove("temperature")
-            symptoms = [request.form[symptom] for symptom in keys]
-            danger = ((temperature + (units=="Kelvin") * 273.0) >= 38.0) or len(symptoms) >= 2
-            session["temperature_processor"] = {"danger": danger,
-                                                "temp": temperature,
-                                                "symptoms": symptoms,
-                                                "units": units}
-        except:
-            error_message = "Expected a temperature reading in float/integer."
-            session["error_message"] = error_message
+        if "units" and "temperature" in request.form:
+            units = request.form["units"]
+            temperature = request.form["temperature"]
+            # Check temperature data type
+            try:
+                temperature = float(temperature)
+                if (units == "Celcius" and not 35.0 <= temperature <= 45.0) or (units == "Kelvin" and not 308.15 <= temperature <= 318.15):
+                    error_message = "Expected a temperature reading between 35.0\u00B0C celcius (308.15 Kelvin) and 45.0\u00B0C celcius (318.15 Kelvin)."
+                    session["error_message"] = error_message
+                    pass
+                keys = list(request.form.keys())
+                keys.remove("units")
+                keys.remove("temperature")
+                symptoms = [request.form[symptom] for symptom in keys]
+                danger = ((temperature + (units=="Kelvin") * 273.0) >= 38.0) or len(symptoms) >= 2
+                session["temperature_processor"] = {"danger": danger,
+                                                    "temp": temperature,
+                                                    "symptoms": symptoms,
+                                                    "units": units}
+            except:
+                error_message = "Expected a temperature reading in float/integer."
+                session["error_message"] = error_message
+        if "postal_code" in request.form:
+            session["postal_code"] = request.form["postal_code"]
+
         return redirect(url_for("request_processor"))
 
     result_k, result_c = get_graph()

@@ -33,9 +33,21 @@
     {% endif %}
   </div>
   <hr/>
+  <div class="card">
+    <div class="card-body">
+        {% include "information.txt" %}
+        <br/>
+        <a href="https://www.who.int/health-topics/coronavirus">Click here to find out more!</a>
+    </div>
+  </div>
+  <hr/>
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="riskData-tab" data-toggle="tab" href="#riskData" role="tab" aria-controls="riskData" aria-selected="true">Risk Data</a>
+        {% if tab=="active" %}
+          <a class="nav-link" id="riskData-tab" data-toggle="tab" href="#riskData" role="tab" aria-controls="riskData" aria-selected="true">Risk Data</a>
+        {% else %}
+          <a class="nav-link active" id="riskData-tab" data-toggle="tab" href="#riskData" role="tab" aria-controls="riskData" aria-selected="false">Risk Data</a>
+        {% endif %}
     </li>
     <li class="nav-item">
       <a class="nav-link" id="statistics-tab" data-toggle="tab" href="#statistics" role="tab" aria-controls="statistics" aria-selected="false">Statistics</a>
@@ -43,10 +55,21 @@
     <li class="nav-item">
       <a class="nav-link" id="news-tab" data-toggle="tab" href="#news" role="tab" aria-controls="news" aria-selected="false">News</a>
     </li>
+    <li class="nav-item">
+        {% if tab=="active" %}
+          <a class="nav-link active" id="masks-tab" data-toggle="tab" href="#mask_gowhere" role="tab" aria-controls="mask_gowhere" aria-selected="true">Mask GoWhere</a>
+        {% else %}
+          <a class="nav-link" id="masks-tab" data-toggle="tab" href="#mask_gowhere" role="tab" aria-controls="mask_gowhere" aria-selected="false">Mask GoWhere</a>
+        {% endif %}
+    </li>
   </ul>
 
   <div class="tab-content">
-    <div class="tab-pane fade show active" id="riskData" role="tabpanel" aria-labelledby="riskData">
+    {% if tab=="active" %}
+      <div class="tab-pane fade" id="riskData" role="tabpanel" aria-labelledby="riskData">
+    {% else %}
+      <div class="tab-pane fade show active" id="riskData" role="tabpanel" aria-labelledby="riskData">
+    {% endif %}
       <div class="card">
         <h5 class="card-header" style="border-color:{{border_color}}; border-width:5px;">Your temperature is: {{temp}}</h5>
         <div class="card-body">
@@ -63,6 +86,10 @@
             With reference from:
             <a href="https://www.medicinenet.com/wuhan_coronavirus_2019-ncov/article.htm">Medicinenet</a>
           </p>
+          <a href="https://www.gov.sg/article/masking-up-how-and-when-you-should-do-it">
+            <img src={{url_for("static", filename="Advisory on Wearing Mask.jpg")}} style="width:300px; height:500px;" alt="Advisory on Wearing Mask">
+          </a>
+          <p>Click on the image to find out more about the advisory on wearing mask</p>
         </div>
       </div>
       <div class="container" id="streetMap" style="height:180px;"></div>
@@ -91,6 +118,27 @@
       </div>
       <br/>
       {% endfor %}
+    </div>
+    {% if tab=="active" %}
+      <div class="tab-pane fade show active" id="mask_gowhere" role="tabpanel" aria-labelledby="news">
+    {% else %}
+      <div class="tab-pane fade" id="mask_gowhere" role="tabpanel" aria-labelledby="news">
+    {% endif %}
+        <h3>Find out where to collect your mask!</h3>
+        <form method="post">
+            Enter your postal code:
+            <input type="number" name="postal_code" placeholder=470715 required>
+            <br/><small>Your personal information will not be stored.</small>
+            <br/><br/><button type="submit" class="btn btn-secondary">Check location</button>
+        </form>
+        {% if show_location %}
+            <hr/>
+            {% set link="https://www.maskgowhere.gov.sg/?postal=" + postal_code|string %}
+            <div style="height:500px;">
+                <iframe src={{link}} style="width:80%; height=100%;" allowfullscreen></iframe>
+            </div>
+        {% endif %}
+        <br/><br/>
     </div>
   </div>
 
